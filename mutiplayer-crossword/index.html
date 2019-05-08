@@ -290,7 +290,7 @@
 		}
 
 
-		function getPuzzleLayout(){
+		function getPuzzleLayout(layoutData){
      		 $board = $("#gameBoard");
      		 $board.empty();
      		 var count = 0;
@@ -305,22 +305,22 @@
 					count = 0;
 				}
 
-				if(!gridData[i].showLetter) {
-					if (gridData[i].letter === "."){
+				if(!layoutData[i].showLetter) {
+					if (layoutData[i].letter === "."){
 						$board.children().last().append('<td id="'+i+'"class="deadBlock"></td>');
 
 					}else{
 
-						$board.children().last().append('<td id="'+i+'"class="clueNum" data-gridNum="'+gridData[i].label+'"><label>'+gridData[i].label+'</label><input maxlength="1" readonly/>'+"</td>");
+						$board.children().last().append('<td id="'+i+'"class="clueNum" data-gridNum="'+layoutData[i].label+'"><label>'+layoutData[i].label+'</label><input maxlength="1" readonly/>'+"</td>");
 					}
 				}
 				
-				else if ((gridData[i].showLetter) && (gridData[i].status === "correct")) {
-					$board.children().last().append('<td id="'+i+'"class="clueNum bg-green" data-gridNum="'+gridData[i].label+'"><label>'+gridData[i].label+'</label><input maxlength="1" value="'+gridData[i].letter+'" readonly/>'+"</td>");
+				else if ((layoutData[i].showLetter) && (layoutData[i].status === "correct")) {
+					$board.children().last().append('<td id="'+i+'"class="clueNum bg-green" data-gridNum="'+layoutData[i].label+'"><label>'+layoutData[i].label+'</label><input maxlength="1" value="'+layoutData[i].letter+'" readonly/>'+"</td>");
 				}
 
-				else if ((gridData[i].showLetter) && (gridData[i].status === "wrong")) {
-					$board.children().last().append('<td id="'+i+'"class="clueNum higlight-red" data-gridNum="'+gridData[i].label+'"><label>'+gridData[i].label+'</label><input maxlength="1" readonly value="'+gridData[i].letter+'"/></td>');
+				else if ((layoutData[i].showLetter) && (layoutData[i].status === "wrong")) {
+					$board.children().last().append('<td id="'+i+'"class="clueNum higlight-red" data-gridNum="'+layoutData[i].label+'"><label>'+layoutData[i].label+'</label><input maxlength="1" readonly value="'+layoutData[i].letter+'"/></td>');
 				}
 				
 			}
@@ -428,13 +428,27 @@
 
 	    		}
 	    	}
-	    	var ref = new Firebase('https://puzzle-crswrd.firebaseio.com');
+	    	// var ref = new Firebase('https://puzzle-crswrd.firebaseio.com');
 			ref.child("gridData").transaction(function (currentData) {
 			  return gridData;
 			});
-	    	getPuzzleLayout();
+			ref.child("userEntries").push({
+				name : "userName",
+				entry : input
+			})
+	    	// getPuzzleLayout();
 	    	
 	    }
+
+	    ref.child("userEntries").on("child_added",function(snapshot){
+	    	console.log(snapshot.ref().parent().name())
+	    })
+	    ref.child("gridData").on("value",function(snapshot){
+	    	console.log(snapshot.val())
+	    	getPuzzleLayout(snapshot.val())
+	    })
+
+
 
 	    function handleClickOfCheck() {
 	    	var direction= $("input[name='direction']:checked").attr("id");
@@ -466,7 +480,7 @@
 	    	// validateAuthToken();
 			generateGridData();
 			generateAnswerStructure();
-			getPuzzleLayout();
+			// getPuzzleLayout();
 			showClues();
 			$("#gameBoard").on("click","td",fetchClue)
 			$("#checkBtn").on("click",handleClickOfCheck)
