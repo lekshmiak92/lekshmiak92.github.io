@@ -472,21 +472,21 @@
 	    		},
 	    		success: function(data){
 	    			alert(data)
-	    			// userAccess = data.isTokenValid;
+	    			userAccess = data.isTokenValid;
 	    		}
 	    	})
 	    }
 
 
 			
-			// var token = QTalkApp.getUserAuthToken()
-			// var userAccess;
+			var token = QTalkApp.getUserAuthToken()
+			var userAccess;
 
 	
 
 			
 	    	// fetchAPI();
-	    	// validateAuthToken();
+	    	validateAuthToken();
 			generateGridData();
 			generateAnswerStructure();
 			// getPuzzleLayout();
