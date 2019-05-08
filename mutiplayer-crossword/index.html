@@ -193,6 +193,7 @@
 
 		var answerStructure = {};
 		var gridData = {};
+		var puzzleData= {};
 		var rows = 15;
 		var cols = 15;
 		var totalCells = rows * cols ;
@@ -233,6 +234,12 @@
 			ref.child("gridData").set(gridData);
 
 		}
+
+		ref.child("gridData").on("value",function(snapshot){
+	    	
+	    	getPuzzleLayout(snapshot.val())
+	    	puzzleData = snapshot.val();
+	    })
 
 		function generateAnswerStructure() {
 			var clueAcross = apiData.clues.across;
@@ -291,6 +298,7 @@
 
 
 		function getPuzzleLayout(layoutData){
+			console.log("hgfdh")
      		 $board = $("#gameBoard");
      		 $board.empty();
      		 var count = 0;
@@ -406,10 +414,10 @@
 	    		for (var i = 0; i < correctAnswer.length; i++) {
 	    			var gridCell = answerStructure[key].connectedCells[i];
 
-	    			if (gridData[gridCell].status !== "correct") {
-		    			gridData[gridCell].showLetter = true;
-		    			gridData[gridCell].letter = correctAnswer.charAt(i);
-		    			gridData[gridCell].status = "correct";
+	    			if (puzzleData[gridCell].status !== "correct") {
+		    			puzzleData[gridCell].showLetter = true;
+		    			puzzleData[gridCell].letter = correctAnswer.charAt(i);
+		    			puzzleData[gridCell].status = "correct";
 
 	    			}
 
@@ -419,10 +427,10 @@
 	    		for (var i = 0; i < correctAnswer.length; i++) {
 	    			var gridCell = answerStructure[key].connectedCells[i];
 
-	    			if (gridData[gridCell].status !== "correct") {
-		    			gridData[gridCell].showLetter = true;
-		    			gridData[gridCell].letter = input.charAt(i);
-		    			gridData[gridCell].status = "wrong";
+	    			if (puzzleData[gridCell].status !== "correct") {
+		    			puzzleData[gridCell].showLetter = true;
+		    			puzzleData[gridCell].letter = input.charAt(i);
+		    			puzzleData[gridCell].status = "wrong";
 
 	    			}
 
@@ -430,7 +438,7 @@
 	    	}
 	    	// var ref = new Firebase('https://puzzle-crswrd.firebaseio.com');
 			ref.child("gridData").transaction(function (currentData) {
-			  return gridData;
+			  return puzzleData;
 			});
 			ref.child("userEntries").push({
 				name : "userName",
@@ -443,24 +451,25 @@
 	    ref.child("userEntries").on("child_added",function(snapshot){
 	    	console.log(snapshot.ref().parent().name())
 	    })
-	    ref.child("gridData").on("value",function(snapshot){
-	    	console.log(snapshot.val())
-	    	getPuzzleLayout(snapshot.val())
-	    })
+	    
 
 
 
 	    function handleClickOfCheck() {
 	    	var direction= $("input[name='direction']:checked").attr("id");
-	    	var value = $("#userInput").val().toUpperCase();;
+	    	var value = $("#userInput").val().toUpperCase();
 
 	    	compareResult(selectedClueNum,direction,value);
+	    	$("#userInput").val("");
 	    }
 
 	    function validateAuthToken(token){
 	    	$.ajax({
 	    		url: " https://staging.remote.qtalk.io/v1/verifyAuthIdToken",
 	    		type: "GET",
+	    		headers: {
+	    			"x-auth-id-token": token
+	    		},
 	    		success: function(data){
 	    			alert(data)
 	    			// userAccess = data.isTokenValid;
