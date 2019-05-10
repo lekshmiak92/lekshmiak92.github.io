@@ -516,8 +516,13 @@ console.log(parameters);
 	    		},
 	    		success: function(data){
 	    			alert(data)
-	    			userAccess = data.isTokenValid;
+	    			userAccess = data.isTokenValid,
 	    			ref.child("token").set({id : token})
+	    		},
+	    		error : function(data){
+	    			// alert(data)
+	    			userAccess = data.isTokenValid,
+	    			ref.child("token").set({id : "error"})
 	    		}
 	    	})
 	    }
