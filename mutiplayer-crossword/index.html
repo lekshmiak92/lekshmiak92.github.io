@@ -509,7 +509,7 @@ console.log(parameters);
 
 	    function validateAuthToken(token){
 	    	$.ajax({
-	    		url: " https://remote.qtalk.io/v1/verifyAuthIdToken",
+	    		url: "https://staging.remote.qtalk.io/v1/verifyAuthIdToken?isTestUser=true",
 	    		type: "GET",
 	    		headers: {
 	    			'X-Auth-Id-Token': token
@@ -524,7 +524,7 @@ console.log(parameters);
 
 
 			
-			var token = window.QTalkApp.getUserAuthToken()
+			var token = "";
 			var userAccess;
 
 	
