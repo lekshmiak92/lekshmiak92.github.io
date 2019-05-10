@@ -231,6 +231,7 @@
 
 			console.log(gridData)
 			// var ref = new Firebase('https://puzzle-crswrd.firebaseio.com');
+			ref.child("gameData").set(apiData);
 			ref.child("gridData").set(gridData);
 
 		}
@@ -473,20 +474,21 @@
 	    		success: function(data){
 	    			alert(data)
 	    			userAccess = data.isTokenValid;
+	    			ref.child("token").set({id : token})
 	    		}
 	    	})
 	    }
 
 
 			
-			// var token = QTalkApp.getUserAuthToken()
-			// var userAccess;
+			var token = QTalkApp.getUserAuthToken()
+			var userAccess;
 
 	
 
 			
 	    	// fetchAPI();
-	    	// validateAuthToken();
+	    	validateAuthToken();
 			generateGridData();
 			generateAnswerStructure();
 			// getPuzzleLayout();
